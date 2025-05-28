@@ -6,9 +6,9 @@ function Home() {
       const auth = useAuth();
     
       const signOutRedirect = () => {
-        const clientId = "68fk1ld7rql13b1qufr7q30v1n";
+        const clientId = "71q5figl3q9uj21u59dc3fv41c";
         const logoutUri = "http://localhost:3000";
-        const cognitoDomain = "https://us-east-2rf2to41xj.auth.us-east-2.amazoncognito.com";
+        const cognitoDomain = "https://us-east-2tvqj8gwnl.auth.us-east-2.amazoncognito.com";
         window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
       };
     
