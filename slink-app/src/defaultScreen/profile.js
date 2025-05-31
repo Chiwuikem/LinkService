@@ -1,6 +1,7 @@
 import React from 'react';  
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from 'react-router-dom';
+import './styles/home.css';
 
 function Profile() {
     const auth = useAuth();
@@ -16,9 +17,11 @@ function Profile() {
         return (
           <div>
             <div>
-                <button onClick={() => navigate("/")} >Home</button>
-                <button onClick={() => auth.signinRedirect()} className='signup'>Sign in</button>
-                <button onClick={() => signOutRedirect()}>Sign out</button>
+              <nav className="navbar">
+                <button onClick={() => navigate("/") } className='signup'>Home</button>
+                <button onClick={() => signOutRedirect()} className='signup'>Sign out</button>
+                <button onClick={() => navigate("/help")} className='signup'>Help</button>
+              </nav>
             </div>
             <pre> Hello: {auth.user?.profile.email} </pre>
             <pre> first Name: {auth.user?.profile.given_name} </pre>

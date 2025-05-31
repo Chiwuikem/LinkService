@@ -1,0 +1,32 @@
+.home-page{
+    background-image: url('./wesley-tingey-B0d8caBMdQ4-unsplash.jpg');
+}
+
+.navbar {
+    background-color: #692ab5;
+    color: white;
+    display: flex;
+    align-items: center;;
+    padding: 20px 20px;
+    gap: 20px;
+    
+}
+
+/* .navlinks {
+   font-weight: 500;
+   
+} */
+
+.signup {
+    color: white;
+    font-weight: 500;
+    background-color: rgba(200, 114, 10, 0);
+    border-radius: 99px;
+    border-color: rgba(240, 248, 255, 0);
+    padding: 10px 20px;
+}
+
+.signup:hover {
+    background-color: rgba(209, 119, 9, 0.482);
+    color: white;
+}
