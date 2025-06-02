@@ -9,6 +9,7 @@ function UploadImage() {
     const [userSub, setUserSub] = useState('');
     const [imageUrl, setImageUrl] =useState(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Fetch the user's sub when the component loads
     useEffect(() => {
@@ -97,12 +98,53 @@ function UploadImage() {
         }
     };
 
+    const deleteFile = async () => {
+        if (!user || !imageUrl) return;
 
+        setIsDeleting(true);
+        const S3_BUCKET = "slinkchiwuikem";
+        const REGION = "us-east-2";
+
+        AWS.config.update({
+            accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
+        });
+
+        const s3 = new AWS.S3({
+            params: { Bucket: S3_BUCKET },
+            region: REGION,
+        });
+
+        // Extract the file key from the URL
+        const fileKey = imageUrl.split(`https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/`)[1];
+
+        const params = {
+            Bucket: S3_BUCKET,
+            Key: fileKey,
+        };
+
+        try {
+            await s3.deleteObject(params).promise();
+            
+            // Remove from localStorage
+            localStorage.removeItem(`userImage_${userSub}`);
+            
+            // Clear the UI
+            setImageUrl(null);
+            setFile(null);
+            alert("File deleted successfully");
+        } catch (err) {
+            console.error("Delete error:", err);
+            alert("Error deleting file");
+        } finally {
+            setIsDeleting(false);
+        }
+    };
 
     return (
         <div>
             <input type="file" onChange={handleFileChange} />
-            <button onClick={uploadFile} disabled={isUploading}>
+            <button onClick={uploadFile} disabled={isUploading || !user}>
                 {isUploading ? 'Uploading...' : 'Upload'}
             </button>
             {imageUrl && (
@@ -113,6 +155,10 @@ function UploadImage() {
                         alt="Uploaded content" 
                         style={{ maxWidth: '100%', height: '400px' }}
                     />
+                    <button onClick={deleteFile} disabled={isDeleting}
+                        style={{ marginTop: '10px', backgroundColor: '#ff4444', color: 'white' }}>
+                        {isDeleting ? 'Deleting...' : 'Delete Image'}
+                    </button>
                 </div>
             )}
         </div>
