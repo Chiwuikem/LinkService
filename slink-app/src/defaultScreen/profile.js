@@ -1,8 +1,7 @@
 import React from 'react';  
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from 'react-router-dom';
-import './helper/UploadImage'
-import './styles/home.css';
+import './styles/home.css'
 import UploadImage from './helper/UploadImage';
 
 function Profile() {
@@ -23,6 +22,7 @@ function Profile() {
               <nav className="navbar">
                 <button onClick={() => navigate("/") } className='signup'>Home</button>
                 <button onClick={() => signOutRedirect()} className='signup'>Sign out</button>
+                <button onClick={() => navigate("/settings")} className='signup'>Settings</button>
                 <button onClick={() => navigate("/help")} className='signup'>Help</button>
               </nav>
             </div>
