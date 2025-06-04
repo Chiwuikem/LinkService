@@ -1,13 +1,13 @@
 import React, {useEffect} from 'react';  
 import { useAuth } from "react-oidc-context";
-import {useNavigate, Navigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import './styles/home.css';
 
 function Home() {
       const auth = useAuth();
       const navigate = useNavigate();
 
-    
+    // Sign out function that redirects to homepage
       const signOutRedirect = () => {
         const clientId = "71q5figl3q9uj21u59dc3fv41c";
         const logoutUri = "http://localhost:3000";
@@ -17,6 +17,8 @@ function Home() {
         window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
       };
      
+      //Automates redirection to profile page after sign in
+      // This effect runs when the component mounts and when auth.isAuthenticated changes
       useEffect(() => {
         const hasRedirected= sessionStorage.getItem('hasRedirected');
           if(auth.isAuthenticated && !hasRedirected){
@@ -41,8 +43,14 @@ function Home() {
           <nav className= "navbar">
             
               <button onClick={() => navigate("/profile")} className='signup'>Profile</button>
-              <button onClick={() => auth.signinRedirect()} className='signup'>Sign in</button>
-              <button onClick={() => signOutRedirect()} className='signup'>Sign out</button>
+
+              {!auth.isAuthenticated && (
+                <button onClick={() => auth.signinRedirect()} className='signup'>Sign in</button>
+              )}
+
+              {auth.isAuthenticated && (
+                <button onClick={() => signOutRedirect()} className='signup'>Sign out</button>
+              )}
            
           </nav>
           <div> 

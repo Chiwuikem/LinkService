@@ -3,6 +3,7 @@ import { useAuth } from "react-oidc-context";
 import { useNavigate } from 'react-router-dom';
 import './styles/home.css'
 import UploadImage from './helper/UploadImage';
+import MapComponent from './helper/mapComponent';
 
 function Profile() {
     const auth = useAuth();
@@ -16,7 +17,7 @@ function Profile() {
         window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
       };
     
-        return (
+    return (
           <div>
             <div>
               <nav className="navbar">
@@ -34,6 +35,7 @@ function Profile() {
             <pre> Refresh Token: {auth.user?.refresh_token} </pre>
 
             <UploadImage />
+            <MapComponent />
             
           </div>
 
