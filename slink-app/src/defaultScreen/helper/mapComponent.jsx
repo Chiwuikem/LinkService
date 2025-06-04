@@ -1,11 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, use} from 'react';
 import {GoogleMap, useLoadScript, Marker, Autocomplete} from '@react-google-maps/api';
+import { FaMapMarkerAlt } from 'react-icons/fa';
+import './helper-css/map.css';
 import {useAuth} from "react-oidc-context";
 
 const libraries = ["places"];
 const mapContainerStyle = {
-  width: '100%',
-  height: '400px',
+  width: '70%',
+  height: '200px',
 };
 
 const defaultCenter = {
@@ -14,7 +16,6 @@ const defaultCenter = {
 };
 
 function MapComponent() {
-    console.log("Google Maps API Key:", process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries,
@@ -23,6 +24,7 @@ function MapComponent() {
     const [userLocation, setUserLocation] = useState(null);
     const [autocomplete, setAutocomplete] = useState(null);
     const [formattedAddress, setFormattedAddress] = useState('');
+    const [showMap, setShowMap] = useState(false);
 
     const onLoad = (autoC) => {
         setAutocomplete(autoC);
@@ -54,37 +56,63 @@ function MapComponent() {
 
     };
 
+    useEffect(() => {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                setUserLocation({
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                });
+            },
+            (error) => {
+                console.error("Error getting user location:", error);
+            }   
+        );
+    }, []);
+
     if (loadError) return <div>Error loading maps</div>;
     if (!isLoaded) return <div>Loading Maps...</div>;
 
     return (
 
-        <div>
-            <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
-                <input
-                    type="text"
-                    placeholder="Search for a place"
-                    style={{
-                        width: '90%',
-                        padding: '12px',
-                        fontSize: '16px',
-                        borderRadius: '4px',
-                        border: '1px solid #ccc',
-                        margin: '10px auto',
-                    }}
-                />
-            </Autocomplete>
-            <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                zoom={12}
-                center={userLocation || defaultCenter}
-                >
-                    {userLocation && <Marker position={userLocation} />}
-            </GoogleMap>
+        <div className="position-toggle-btn">
+            {/* Location Pin Icon Button */}
+            <button
+                className="map-toggle-button"
+                onClick={() => setShowMap(!showMap)}
+            >
+                <FaMapMarkerAlt title={showMap ? "Hide Map": "Show Map"}/>
+            </button>
+            {showMap && (
+                <div>
+                <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+                    <input
+                        type="text"
+                        placeholder="My neighborhood"
+                        className="bold-placeholder"
+                        style={{
+                            width: '60%',
+                            padding: '12px',
+                            fontSize: '16px',
+                            borderRadius: '4px',
+                            border: '1px solid #ccc',
+                            margin: '10px auto',
+                        }}
+                    />
+                </Autocomplete>
+                <GoogleMap
+                    mapContainerStyle={mapContainerStyle}
+                    zoom={12}
+                    center={userLocation || defaultCenter}
+                    >
+                        {userLocation && <Marker position={userLocation} />}
+                </GoogleMap>
 
-            {formattedAddress && (
-                <div style={{ marginTop: '10px', fontSize: 'italic' }}>
-                    <strong>Selected Address:</strong> {formattedAddress}
+                {formattedAddress && (
+                    <div style={{ marginTop: '10px', fontSize: 'italic' }}>
+                        <strong>Selected Address:</strong> {formattedAddress}
+                    </div>
+                )}
                 </div>
             )}
         </div>
