@@ -6,7 +6,7 @@ import {useAuth} from "react-oidc-context";
 
 const libraries = ["places"];
 const mapContainerStyle = {
-  width: '70%',
+  width: '60%',
   height: '200px',
 };
 
@@ -21,6 +21,8 @@ function MapComponent() {
         libraries,
     });
 
+    const auth= useAuth();
+
     const [userLocation, setUserLocation] = useState(null);
     const [autocomplete, setAutocomplete] = useState(null);
     const [formattedAddress, setFormattedAddress] = useState('');
@@ -33,7 +35,7 @@ function MapComponent() {
     const onPlaceChanged = () => {
         if (autocomplete !== null){
             const place = autocomplete.getPlace();
-
+            
             if(!place.geometry || !place.geometry.location){
                 console.log("No details available for input: ' ", place.name+ "'");
                 return;
@@ -48,6 +50,7 @@ function MapComponent() {
             console.log("Selected coordinates:", { lat, lng });
 
             //TODO: Save the address and coordinates to the database
+            
 
         } else {
             console.log("Autocomplete is not loaded yet!");
@@ -75,44 +78,33 @@ function MapComponent() {
 
     return (
 
-        <div className="position-toggle-btn">
+        <div className="map-component">
             {/* Location Pin Icon Button */}
             <button
-                className="map-toggle-button"
+                className="map-toggle-btn"
                 onClick={() => setShowMap(!showMap)}
             >
                 <FaMapMarkerAlt title={showMap ? "Hide Map": "Show Map"}/>
             </button>
             {showMap && (
-                <div>
-                <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
-                    <input
-                        type="text"
-                        placeholder="My neighborhood"
-                        className="bold-placeholder"
-                        style={{
-                            width: '60%',
-                            padding: '12px',
-                            fontSize: '16px',
-                            borderRadius: '4px',
-                            border: '1px solid #ccc',
-                            margin: '10px auto',
-                        }}
-                    />
-                </Autocomplete>
-                <GoogleMap
-                    mapContainerStyle={mapContainerStyle}
-                    zoom={12}
-                    center={userLocation || defaultCenter}
-                    >
-                        {userLocation && <Marker position={userLocation} />}
-                </GoogleMap>
+                <div className="map-container-position">
+                    <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+                        <input
+                            type="text"
+                            placeholder="My neighborhood"
+                            className="bold-placeholder"
+                            
+                        />
+                    </Autocomplete>
+                    <GoogleMap
+                        mapContainerStyle={mapContainerStyle}
+                        zoom={12}
+                        center={userLocation || defaultCenter}
+                        >
+                            {userLocation && <Marker position={userLocation} />}
+                    </GoogleMap>
 
-                {formattedAddress && (
-                    <div style={{ marginTop: '10px', fontSize: 'italic' }}>
-                        <strong>Selected Address:</strong> {formattedAddress}
-                    </div>
-                )}
+                
                 </div>
             )}
         </div>
