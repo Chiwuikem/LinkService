@@ -1,4 +1,4 @@
-import React, {useState, useEffect, use} from 'react';
+import React, {useState, useEffect} from 'react';
 import {GoogleMap, useLoadScript, Marker, Autocomplete} from '@react-google-maps/api';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import './helper-css/map.css';

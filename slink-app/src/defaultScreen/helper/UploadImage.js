@@ -1,41 +1,52 @@
 import AWS from 'aws-sdk';
 import { useState, useEffect} from 'react';
 import { useAuth } from "react-oidc-context"; 
+import './helper-css/upload-image.css'; 
 
 function UploadImage() {
     const auth = useAuth();
     const { user } = useAuth();
-    const [file, setFile] = useState(null);
     const [userSub, setUserSub] = useState('');
-    const [imageUrl, setImageUrl] =useState(null);
     const [isUploading, setIsUploading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [uploadedImages, setUploadedImages]= useState([]);
+    const [fileMap, setFileMap] = useState({});
+    const [fileToUpload, setFileToUpload] = useState(null);
 
     // Fetch the user's sub when the component loads
     useEffect(() => {
         if (user){
                 setUserSub(user.profile.sub);
-                const savedImageUrl = localStorage.getItem(`userImage_${user.profile.sub}`);
-                if (savedImageUrl) {
-                    setImageUrl(savedImageUrl);
+                const saved = localStorage.getItem(`userImage_${user.profile.sub}`);
+                if (saved) {
+                    try{
+                    const parsed= JSON.parse(saved);
+                    const images = Array.isArray(parsed) ? parsed : [parsed];
+                    setUploadedImages(images);
+                    } catch (e){
+                        setUploadedImages([saved]);
+                    }
+                    
                 }
             }
         
     }, [user]);
 
     //function to handle file and store it to file state
-    const handleFileChange = (e) => {
+    const handleFileChange = (e, index) => {
         if(!auth.isAuthenticated){
-            console.error("not logged in");
             alert("Please log in to upload files.");
             e.target.value = ''; // Clear the file input
             return;
 
             
         }
-        const file = e.target.files[0];
-        setFile(file);
-        setImageUrl('');
+        const selectedFile = e.target.files[0];
+        if (!selectedFile) {
+            alert("No file selected.");
+            return;
+        }
+        setFileToUpload(selectedFile);
     };
 
 
@@ -43,16 +54,12 @@ function UploadImage() {
     //function to upload file to s3
 
     const uploadFile = async () =>{
-        if(!user){
-            console.error("not logged in");
-            alert("Please log in to upload files.");
-            return;
-            
-        }
-        if (!file) {
+        if (!fileToUpload) {
             alert("Please select a file to upload.");
             return;
         }
+
+        
 
 
         setIsUploading(true);
@@ -65,20 +72,16 @@ function UploadImage() {
             secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
         });
 
-        const s3 = new AWS.S3({
-            params: { Bucket: S3_BUCKET },
-            region: REGION,
-            Body: file,
-            ContentType: file.type,
-        });
+        const s3 = new AWS.S3({region: REGION});
 
-        const fileKey = `${userSub}/${file.name}`;
+        const fileKey = `${userSub}/${Date.now()}_${fileToUpload.name}`;
 
         // File parameters
         const params = {
             Bucket: S3_BUCKET,
             Key: fileKey, // Use user's sub as a folder
-            Body: file,
+            Body: fileToUpload,
+            ContentType: fileToUpload.type,
         };
 
         // Upload the file to S3
@@ -87,10 +90,16 @@ function UploadImage() {
             
             // Generate the public URL
             const uploadedUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileKey}`;
+
+            const updatedImages = [...uploadedImages, uploadedUrl]; // Create a new array with the new URL
+
+            // Update the specific index with the new URL 
+            setUploadedImages(updatedImages);
+
             // Save the URL to localStorage
-            localStorage.setItem(`userImage_${userSub}`, uploadedUrl);
-            setImageUrl(uploadedUrl);
-            
+            localStorage.setItem(`userImage_${userSub}`, JSON.stringify(updatedImages));
+            setFileToUpload(null); // Clear the file input state
+            document.getElementById('file-upload').value = ''; // Clear the file input in the UI
             alert("File uploaded successfully");
         } catch (err) {
             console.error("Upload error:", err);
@@ -100,7 +109,8 @@ function UploadImage() {
         }
     };
 
-    const deleteFile = async () => {
+    const deleteFile = async (index) => {
+        const imageUrl = uploadedImages[index]
         if (!user || !imageUrl) return;
 
         setIsDeleting(true);
@@ -112,10 +122,7 @@ function UploadImage() {
             secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
         });
 
-        const s3 = new AWS.S3({
-            params: { Bucket: S3_BUCKET },
-            region: REGION,
-        });
+        const s3 = new AWS.S3({ region: REGION });
 
         // Extract the file key from the URL
         const fileKey = imageUrl.split(`https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/`)[1];
@@ -127,13 +134,19 @@ function UploadImage() {
 
         try {
             await s3.deleteObject(params).promise();
-            
+            const updated= [...uploadedImages];
+
+            updated.splice(index, 1);
+            setUploadedImages(updated);
             // Remove from localStorage
-            localStorage.removeItem(`userImage_${userSub}`);
+            localStorage.setItem(`userImage_${userSub}`, JSON.stringify(updated));
             
             // Clear the UI
-            setImageUrl(null);
-            setFile(null);
+            setFileMap(prev => {
+                const updatedMap= { ...prev };
+                delete updatedMap[index]; // Remove the specific index
+                return updatedMap;
+            });
             alert("File deleted successfully");
         } catch (err) {
             console.error("Delete error:", err);
@@ -144,25 +157,44 @@ function UploadImage() {
     };
 
     return (
-        <div>
-            <input type="file" onChange={handleFileChange} />
-            <button onClick={uploadFile} disabled={isUploading || !user}>
-                {isUploading ? 'Uploading...' : 'Upload'}
-            </button>
-            {imageUrl && (
-                <div style={{ marginTop: '20px' }}>
-                    <h3>Uploaded Image:</h3>
-                    <img 
-                        src={imageUrl} 
-                        alt="Uploaded content" 
-                        style={{ maxWidth: '100%', height: '400px' }}
-                    />
-                    <button onClick={deleteFile} disabled={isDeleting}
-                        style={{ marginTop: '10px', backgroundColor: '#ff4444', color: 'white' }}>
-                        {isDeleting ? 'Deleting...' : 'Delete Image'}
+        <div className="media-upload-grid">
+            {uploadedImages.map((url, index) => (
+                <div key={url} className="upload-container">
+                    <img src={url} alt={`uploaded-${index}`} className="uploaded-image" />
+                    <button onClick={() => deleteFile(index)} disabled={isDeleting} className="delete-button">
+                        &times;
                     </button>
                 </div>
-            )}
+            ))}
+            <div>
+                <div className="upload-container">
+                    <input
+                        type="file"
+                        id="file-upload"
+                        accept="image/*, video/*"
+                        style={{ display: 'none' }}
+                        onChange={handleFileChange}
+                    />
+                    <label htmlFor="file-upload" className="upload-label">
+                        <span className="plus-sign">+</span>
+                    </label>
+                </div>
+
+                    {fileToUpload && (
+                        <div className="upload-button-under-file">
+                            <button
+                                onClick={ uploadFile}
+                                disabled={isUploading}
+                                className="upload-button"
+                            >
+                                {isUploading ? 'Uploading...' : 'Upload'}
+                            </button>
+                        </div>
+                    )}
+                </div>
+            
+        
+            
         </div>
     );
 }

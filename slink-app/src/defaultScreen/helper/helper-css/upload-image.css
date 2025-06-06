@@ -1,0 +1,106 @@
+.media-upload-grid{
+display:flex;
+flex-wrap:wrap;
+gap: 16px;
+justify-content:flex-start;
+grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.upload-label{
+    align-items: center;
+    display: flex;
+    justify-content: center;/*Places the + in the center*/
+    align-items: center;/*Places the + in the center*/
+    cursor: pointer;
+    width: 150px;
+    height: 200px;
+}
+
+
+.upload-container{
+    width: 150px;
+    height: 200px;
+    position: relative;
+    border: 2px solid hsl(0, 0%, 80%);
+    border-radius: 20px;
+    display:flex;
+    cursor: pointer;
+    transition: border-color 1s ease;
+    background-color: #767676;
+}
+.upload-container:hover{
+    border-color: hsl(0, 0%, 50%);
+    background-color: aliceblue;
+}
+.plus-sign{
+    font-size: 80px;
+    color: black;
+    font-weight:300;
+}
+
+.uploaded-image-container{
+margin-top: 20px;
+}
+
+.uploaded-image{
+    max-width: 150px;
+    max-height: 200px;
+    border-radius: 20px;
+    object-fit: contain;
+    display:block;
+}
+
+.upload-button{
+    margin-top:5px;
+    padding: 10px 16px;
+    background-color: rgb(0, 0, 0);
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    height: 40px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 150px;
+    font-weight: bold;
+    z-index: 20;
+    display: block;
+    transition: background-color 0.5s ease;
+}
+
+.upload-button:hover {
+    background-color: rgb(200, 120, 50);
+}
+
+.upload-button:disabled {
+    background-color: rgb(150, 150, 150);
+    cursor: not-allowed;
+}
+
+
+.delete-button {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    color: black;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    line-height: 1;
+    z-index: 20;
+    transition: background-color 0.2s ease;
+}
+
+.delete-button:hover {
+    background-color: red;
+    color: white;
+}
