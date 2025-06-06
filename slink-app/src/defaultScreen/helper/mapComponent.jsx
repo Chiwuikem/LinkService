@@ -5,10 +5,7 @@ import './helper-css/map.css';
 import {useAuth} from "react-oidc-context";
 
 const libraries = ["places"];
-const mapContainerStyle = {
-  width: '60%',
-  height: '200px',
-};
+
 
 const defaultCenter = {
     lat: 39.8283, // Default latitude
@@ -96,13 +93,15 @@ function MapComponent() {
                             
                         />
                     </Autocomplete>
+                    
                     <GoogleMap
-                        mapContainerStyle={mapContainerStyle}
+                        mapContainerClassName="google-map"
                         zoom={12}
                         center={userLocation || defaultCenter}
                         >
                             {userLocation && <Marker position={userLocation} />}
                     </GoogleMap>
+                    
 
                 
                 </div>

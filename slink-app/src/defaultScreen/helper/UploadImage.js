@@ -23,7 +23,7 @@ function UploadImage() {
         
     }, [user]);
 
-        //function to handle file and store it to file state
+    //function to handle file and store it to file state
     const handleFileChange = (e) => {
         if(!auth.isAuthenticated){
             console.error("not logged in");
@@ -68,6 +68,8 @@ function UploadImage() {
         const s3 = new AWS.S3({
             params: { Bucket: S3_BUCKET },
             region: REGION,
+            Body: file,
+            ContentType: file.type,
         });
 
         const fileKey = `${userSub}/${file.name}`;
