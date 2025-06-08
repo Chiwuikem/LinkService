@@ -157,44 +157,47 @@ function UploadImage() {
     };
 
     return (
-        <div className="media-upload-grid">
-            {uploadedImages.map((url, index) => (
-                <div key={url} className="upload-container">
-                    <img src={url} alt={`uploaded-${index}`} className="uploaded-image" />
-                    <button onClick={() => deleteFile(index)} disabled={isDeleting} className="delete-button">
-                        &times;
-                    </button>
-                </div>
-            ))}
-            <div>
-                <div className="upload-container">
-                    <input
-                        type="file"
-                        id="file-upload"
-                        accept="image/*, video/*"
-                        style={{ display: 'none' }}
-                        onChange={handleFileChange}
-                    />
-                    <label htmlFor="file-upload" className="upload-label">
-                        <span className="plus-sign">+</span>
-                    </label>
-                </div>
 
-                    {fileToUpload && (
-                        <div className="upload-button-under-file">
-                            <button
-                                onClick={ uploadFile}
-                                disabled={isUploading}
-                                className="upload-button"
-                            >
-                                {isUploading ? 'Uploading...' : 'Upload'}
-                            </button>
-                        </div>
-                    )}
-                </div>
+        <div>
+            <div className="media-upload-grid">
+                {uploadedImages.map((url, index) => (
+                    <div key={url} className="upload-container">
+                        <img src={url} alt={`uploaded-${index}`} className="uploaded-image" />
+                        <button onClick={() => deleteFile(index)} disabled={isDeleting} className="delete-button">
+                            &times;
+                        </button>
+                    </div>
+                ))}
+                <div>
+                    <div className="upload-container">
+                        <input
+                            type="file"
+                            id="file-upload"
+                            accept="image/*, video/*"
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange}
+                        />
+                        <label htmlFor="file-upload" className="upload-label">
+                            <span className="plus-sign">+</span>
+                        </label>
+                    </div>
+
+                        {fileToUpload && (
+                            <div className="upload-button-under-file">
+                                <button
+                                    onClick={ uploadFile}
+                                    disabled={isUploading}
+                                    className="upload-button"
+                                >
+                                    {isUploading ? 'Uploading...' : 'Upload'}
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                
             
-        
-            
+                
+            </div>
         </div>
     );
 }
