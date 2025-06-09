@@ -1,204 +1,209 @@
 import AWS from 'aws-sdk';
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from "react-oidc-context"; 
 import './helper-css/upload-image.css'; 
 
 function UploadImage() {
-    const auth = useAuth();
-    const { user } = useAuth();
-    const [userSub, setUserSub] = useState('');
-    const [isUploading, setIsUploading] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [uploadedImages, setUploadedImages]= useState([]);
-    const [fileMap, setFileMap] = useState({});
-    const [fileToUpload, setFileToUpload] = useState(null);
+  const auth = useAuth();
+  const { user } = auth;
 
-    // Fetch the user's sub when the component loads
-    useEffect(() => {
-        if (user){
-                setUserSub(user.profile.sub);
-                const saved = localStorage.getItem(`userImage_${user.profile.sub}`);
-                if (saved) {
-                    try{
-                    const parsed= JSON.parse(saved);
-                    const images = Array.isArray(parsed) ? parsed : [parsed];
-                    setUploadedImages(images);
-                    } catch (e){
-                        setUploadedImages([saved]);
-                    }
-                    
-                }
-            }
-        
-    }, [user]);
+  const [userSub, setUserSub] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadedItems, setUploadedItems] = useState([]);
+  const [fileToUpload, setFileToUpload] = useState(null);
+  const [previewURL, setPreviewURL] = useState(null);
+  const [previewType, setPreviewType] = useState('');
+  const [profilePic, setProfilePic] = useState(null);
 
-    //function to handle file and store it to file state
-    const handleFileChange = (e, index) => {
-        if(!auth.isAuthenticated){
-            alert("Please log in to upload files.");
-            e.target.value = ''; // Clear the file input
-            return;
+  const S3_BUCKET = "slinkchiwuikem";
+  const REGION = "us-east-2";
 
-            
-        }
-        const selectedFile = e.target.files[0];
-        if (!selectedFile) {
-            alert("No file selected.");
-            return;
-        }
-        setFileToUpload(selectedFile);
+  useEffect(() => {
+    if (user) {
+      const sub = user.profile.sub;
+      setUserSub(sub);
+      const saved = localStorage.getItem(`userUploads_${sub}`);
+      const savedProfile = localStorage.getItem(`profilePic_${sub}`);
+      if (saved) setUploadedItems(JSON.parse(saved));
+      if (savedProfile) setProfilePic(savedProfile);
+    }
+  }, [user]);
+
+  const handleFileChange = e => {
+    if (!auth.isAuthenticated) {
+      alert("Please log in to upload files.");
+      return;
+    }
+    const file = e.target.files[0];
+    if (file) {
+      setFileToUpload(file);
+      setPreviewURL(URL.createObjectURL(file));
+      setPreviewType(file.type);
+    }
+  };
+
+  const uploadFile = async () => {
+    if (!fileToUpload) {
+      alert("Please select a file first.");
+      return;
+    }
+    setIsUploading(true);
+
+    AWS.config.update({
+      accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
+    });
+
+    const s3 = new AWS.S3({ region: REGION });
+    const fileKey = `${userSub}/${Date.now()}_${fileToUpload.name}`;
+    const params = {
+      Bucket: S3_BUCKET,
+      Key: fileKey,
+      Body: fileToUpload,
+      ContentType: fileToUpload.type,
     };
 
+    try {
+      await s3.upload(params).promise();
+      const url = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileKey}`;
+      const newItem = { url, type: fileToUpload.type };
+      const updated = [...uploadedItems, newItem];
+      setUploadedItems(updated);
+      localStorage.setItem(`userUploads_${userSub}`, JSON.stringify(updated));
 
+      // If no profile pic yet, set the first uploaded image as profile
+      if (!localStorage.getItem(`profilePic_${userSub}`) && fileToUpload.type.startsWith('image/')) {
+        localStorage.setItem(`profilePic_${userSub}`, url);
+        setProfilePic(url);
+      }
 
-    //function to upload file to s3
+      setFileToUpload(null);
+      setPreviewURL(null);
+      document.getElementById('file-upload').value = '';
+    } catch (err) {
+      console.error(err);
+      alert("Upload failed");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
-    const uploadFile = async () =>{
-        if (!fileToUpload) {
-            alert("Please select a file to upload.");
-            return;
-        }
+  const deleteFile = async index => {
+    const { url } = uploadedItems[index];
+    const fileKey = url.split(`amazonaws.com/`)[1];
+    const s3 = new AWS.S3({ region: REGION });
+    try {
+      await s3.deleteObject({ Bucket: S3_BUCKET, Key: fileKey }).promise();
+      const updated = uploadedItems.filter((_, i) => i !== index);
+      setUploadedItems(updated);
+      localStorage.setItem(`userUploads_${userSub}`, JSON.stringify(updated));
 
-        
+      if (profilePic === url) {
+        localStorage.removeItem(`profilePic_${userSub}`);
+        setProfilePic(null);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Delete failed");
+    }
+  };
 
+  return (
+    <div className="profile-page">
+      {/* Profile Picture */}
+      <div className="profile-pic-container">
+        {profilePic && <img src={profilePic} alt="Profile" className="profile-picture" />}
+      </div>
 
-        setIsUploading(true);
-        const S3_BUCKET= "slinkchiwuikem";
-        const REGION = "us-east-2"; 
+      {/* Upload Preview */}
+      {previewURL && (
+        <div className="preview-overlay">
+          <button
+            className="close-preview"
+            onClick={() => {
+              setPreviewURL(null);
+              setFileToUpload(null);
+              document.getElementById('file-upload').value = '';
+            }}
+          >
+            &times;
+          </button>
 
-        // Configure AWS SDK with credentials
-        AWS.config.update({
-            accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
-            secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
-        });
+          {previewType.startsWith('video/') ? (
+            <video src={previewURL} className="preview-video" controls autoPlay />
+          ) : (
+            <img src={previewURL} alt="Preview" className="preview-image" />
+          )}
 
-        const s3 = new AWS.S3({region: REGION});
-
-        const fileKey = `${userSub}/${Date.now()}_${fileToUpload.name}`;
-
-        // File parameters
-        const params = {
-            Bucket: S3_BUCKET,
-            Key: fileKey, // Use user's sub as a folder
-            Body: fileToUpload,
-            ContentType: fileToUpload.type,
-        };
-
-        // Upload the file to S3
-         try {
-            await s3.upload(params).promise();
-            
-            // Generate the public URL
-            const uploadedUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileKey}`;
-
-            const updatedImages = [...uploadedImages, uploadedUrl]; // Create a new array with the new URL
-
-            // Update the specific index with the new URL 
-            setUploadedImages(updatedImages);
-
-            // Save the URL to localStorage
-            localStorage.setItem(`userImage_${userSub}`, JSON.stringify(updatedImages));
-            setFileToUpload(null); // Clear the file input state
-            document.getElementById('file-upload').value = ''; // Clear the file input in the UI
-            alert("File uploaded successfully");
-        } catch (err) {
-            console.error("Upload error:", err);
-            alert("Error uploading file");
-        } finally {
-            setIsUploading(false);
-        }
-    };
-
-    const deleteFile = async (index) => {
-        const imageUrl = uploadedImages[index]
-        if (!user || !imageUrl) return;
-
-        setIsDeleting(true);
-        const S3_BUCKET = "slinkchiwuikem";
-        const REGION = "us-east-2";
-
-        AWS.config.update({
-            accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
-            secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
-        });
-
-        const s3 = new AWS.S3({ region: REGION });
-
-        // Extract the file key from the URL
-        const fileKey = imageUrl.split(`https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/`)[1];
-
-        const params = {
-            Bucket: S3_BUCKET,
-            Key: fileKey,
-        };
-
-        try {
-            await s3.deleteObject(params).promise();
-            const updated= [...uploadedImages];
-
-            updated.splice(index, 1);
-            setUploadedImages(updated);
-            // Remove from localStorage
-            localStorage.setItem(`userImage_${userSub}`, JSON.stringify(updated));
-            
-            // Clear the UI
-            setFileMap(prev => {
-                const updatedMap= { ...prev };
-                delete updatedMap[index]; // Remove the specific index
-                return updatedMap;
-            });
-            alert("File deleted successfully");
-        } catch (err) {
-            console.error("Delete error:", err);
-            alert("Error deleting file");
-        } finally {
-            setIsDeleting(false);
-        }
-    };
-
-    return (
-
-        <div>
-            <div className="media-upload-grid">
-                {uploadedImages.map((url, index) => (
-                    <div key={url} className="upload-container">
-                        <img src={url} alt={`uploaded-${index}`} className="uploaded-image" />
-                        <button onClick={() => deleteFile(index)} disabled={isDeleting} className="delete-button">
-                            &times;
-                        </button>
-                    </div>
-                ))}
-                <div>
-                    <div className="upload-container">
-                        <input
-                            type="file"
-                            id="file-upload"
-                            accept="image/*, video/*"
-                            style={{ display: 'none' }}
-                            onChange={handleFileChange}
-                        />
-                        <label htmlFor="file-upload" className="upload-label">
-                            <span className="plus-sign">+</span>
-                        </label>
-                    </div>
-
-                        {fileToUpload && (
-                            <div className="upload-button-under-file">
-                                <button
-                                    onClick={ uploadFile}
-                                    disabled={isUploading}
-                                    className="upload-button"
-                                >
-                                    {isUploading ? 'Uploading...' : 'Upload'}
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                
-            
-                
-            </div>
+          <button
+            onClick={uploadFile}
+            disabled={isUploading}
+            className="preview-upload-button"
+          >
+            {isUploading ? 'Uploading…' : 'Upload'}
+          </button>
         </div>
-    );
+      )}
+
+      {/* Uploaded Media Grid */}
+      <div className="media-upload-grid">
+        {uploadedItems.map(({ url, type }, idx) => (
+          <div key={url} className="upload-container">
+            {type.startsWith('video/') ? (
+              <div className="video-wrapper">
+                <video
+                  src={url}
+                  className="uploaded-video"
+                  controls={false}
+                  muted
+                  playsInline
+                  preload="metadata"
+                  onClick={(e) => {
+                    const video = e.currentTarget;
+                    if (video.paused) {
+                      video.play();
+                      video.nextSibling.style.display = 'none';
+                    } else {
+                      video.pause();
+                      video.nextSibling.style.display = 'flex';
+                    }
+                  }}
+                />
+                <div
+                  className="play-button-overlay"
+                  onClick={(e) => {
+                    const video = e.currentTarget.previousSibling;
+                    video.play();
+                    e.currentTarget.style.display = 'none';
+                  }}
+                >
+                  ▶
+                </div>
+              </div>
+            ) : (
+              <img src={url} alt="" className="uploaded-image" />
+            )}
+            <button onClick={() => deleteFile(idx)} className="delete-button">
+              &times;
+            </button>
+          </div>
+        ))}
+
+        <div className="upload-container">
+          <input
+            id="file-upload"
+            type="file"
+            accept="image/*,video/*"
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+          <label htmlFor="file-upload" className="upload-label">
+            <span className="plus-sign">+</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  );
 }
+
 export default UploadImage;

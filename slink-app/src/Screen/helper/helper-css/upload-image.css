@@ -1,110 +1,239 @@
-.media-upload-grid{
-display:grid;
-grid-template-columns: repeat(4,1fr);
-gap: 20px;
-width: 70vw;
-margin: 0 auto;
-justify-content:center;
-padding: 20px;
+/* Entire profile page background and text color */
+.profile-page {
+  background-color: black;
+  color: white; /* ensures bio and other text are visible */
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+  font-family: Arial, sans-serif;
 }
 
-.upload-label{
-    align-items: center;
-    display: flex;
-    justify-content: center;/*Places the + in the center*/
-    align-items: center;/*Places the + in the center*/
-    cursor: pointer;
-    width: 150px;
-    height: 200px;
+/* Profile picture container: centered and with reduced top margin */
+.profile-pic-container {
+  margin-top: 40px; /* brought closer */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-
-.upload-container{
-    width: 100%;
-    aspect-ratio: 3/4;
-    position: relative;
-    border: 2px solid hsl(0, 0%, 80%);
-    border-radius: 20px;
-    display:flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: border-color 1s ease;
-    background-color: #767676;
-}
-.upload-container:hover{
-    border-color: hsl(0, 0%, 50%);
-    background-color: aliceblue;
-}
-.plus-sign{
-    font-size: 80px;
-    color: black;
-    font-weight:300;
+/* Profile picture styling */
+.profile-picture {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-.uploaded-image-container{
-margin-top: 20px;
+/* User bio text */
+.user-bio {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 16px;
+  color: lightgray;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.uploaded-image{
-    width: 100%;
-    height: 100%;
-    border-radius: 20px;
-    object-fit: contain;
-    display:block;
+/* Grid layout for uploaded media */
+.media-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 70vw;
+  margin: 0 auto;
+  justify-content: center;
+  padding: 20px;
+  margin-top: 20px; /* reduced margin for closer spacing */
 }
 
-.upload-button{
-    margin-top:5px;
-    padding: 10px 16px;
-    background-color: rgb(0, 0, 0);
-    color: white;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    height: 40px;
-    cursor: pointer;
-    width: 100%;
-    max-width: 150px;
-    font-weight: bold;
-    z-index: 20;
-    display: block;
-    transition: background-color 0.5s ease;
+/* Each media container */
+.upload-container {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  position: relative;
+  border: 2px solid hsl(0, 0%, 80%);
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: border-color 1s ease;
+  background-color: #767676;
 }
 
-.upload-button:hover {
-    background-color: rgb(200, 120, 50);
+.upload-container:hover {
+  border-color: hsl(0, 0%, 50%);
+  background-color: aliceblue;
 }
 
-.upload-button:disabled {
-    background-color: rgb(150, 150, 150);
-    cursor: not-allowed;
+/* Upload label for the file input */
+.upload-label {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  width: 150px;
+  height: 200px;
 }
 
+/* Big plus sign inside the upload button */
+.plus-sign {
+  font-size: 80px;
+  color: black;
+  font-weight: 300;
+}
 
+/* Image styling */
+.uploaded-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Video wrapper with play button overlay */
+.video-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.uploaded-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  cursor: pointer;
+  display: block;
+}
+
+.play-button-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+  font-size: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.play-button-overlay:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Preview upload button */
+.preview-upload-button {
+  margin-top: 30px;
+  padding: 12px 24px;
+  background-color: black;
+  color: white;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 1001;
+  position: relative;
+  display: block;
+  font-weight: bold;
+  max-width: 180px;
+  width: 100%;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.preview-upload-button:hover {
+  background-color: rgb(200, 120, 50);
+}
+
+.preview-upload-button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
+/* Delete button inside media containers */
 .delete-button {
-    position: absolute;
-    top: -6px;
-    right: -8px;
-    background: rgba(255, 255, 255, 0.8);
-    border: none;
-    color: black;
-    font-size: 24px;
-    font-weight: bold;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-    line-height: 1;
-    z-index: 20;
-    transition: background-color 0.2s ease;
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  color: black;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  line-height: 1;
+  z-index: 20;
+  transition: background-color 0.2s ease;
 }
 
 .delete-button:hover {
-    background-color: red;
-    color: white;
+  background-color: red;
+  color: white;
+}
+
+/* Preview overlay when uploading */
+.preview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  padding: 20px;
+}
+
+/* Preview video */
+.preview-video {
+  max-width: 90%;
+  max-height: 70%;
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+  background-color: transparent;
+}
+
+/* Preview image */
+.preview-image {
+  max-width: 90%;
+  max-height: 70%;
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+  background-color: white;
+}
+
+/* Close preview (X button) */
+.close-preview {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 36px;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1000;
 }

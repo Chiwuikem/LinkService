@@ -40,21 +40,8 @@ function Home() {
     
       return (
         <div> 
-          <nav className= "navbar">
-            
-              <button onClick={() => navigate("/profile")} className='signup'>Profile</button>
-
-              {!auth.isAuthenticated && (
-                <button onClick={() => auth.signinRedirect()} className='signup'>Sign in</button>
-              )}
-
-              {auth.isAuthenticated && (
-                <button onClick={() => signOutRedirect()} className='signup'>Sign out</button>
-              )}
-           
-          </nav>
           <div> 
-              <h1> Streamer University</h1>
+              <h1>              Streamer University</h1>
           </div>
         </div>
 
