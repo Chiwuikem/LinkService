@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {GoogleMap, useLoadScript, Marker, Autocomplete} from '@react-google-maps/api';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import './helper-css/map.css';
-import {useAuth} from "react-oidc-context";
+//import {useAuth} from "react-oidc-context";
 
 const libraries = ["places"];
 
@@ -18,7 +18,7 @@ function MapComponent() {
         libraries,
     });
 
-    const auth= useAuth();
+    
 
     const [userLocation, setUserLocation] = useState(null);
     const [autocomplete, setAutocomplete] = useState(null);

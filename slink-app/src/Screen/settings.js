@@ -16,6 +16,7 @@ function Settings() {
     <div style={{ padding: '20px' }}>
       <h2>Settings</h2>
       <button onClick={signOutRedirect} className="signout">Sign Out</button>
+      <button onClick = {() =>auth.signinRedirect()}>sign in</button>
     </div>
   );
 }

@@ -108,40 +108,38 @@ function UploadImage() {
     }
   };
 
+  const closePreview = () => {
+    setPreviewURL(null);
+    setFileToUpload(null);
+    document.getElementById('file-upload').value='';
+
+  };
+
   return (
     <div className="profile-page">
-      {/* Profile Picture */}
-      <div className="profile-pic-container">
-        {profilePic && <img src={profilePic} alt="Profile" className="profile-picture" />}
-      </div>
 
       {/* Upload Preview */}
       {previewURL && (
         <div className="preview-overlay">
-          <button
-            className="close-preview"
-            onClick={() => {
-              setPreviewURL(null);
-              setFileToUpload(null);
-              document.getElementById('file-upload').value = '';
-            }}
-          >
-            &times;
-          </button>
+            <div className="preview-container">
+                <button className="close-preview" onClick={closePreview}>
+                &times;
+                </button>
 
-          {previewType.startsWith('video/') ? (
-            <video src={previewURL} className="preview-video" controls autoPlay />
-          ) : (
-            <img src={previewURL} alt="Preview" className="preview-image" />
-          )}
+                {previewType.startsWith('video/') ? (
+                    <video src={previewURL} className="preview-video" controls autoPlay />
+                ) : (
+                    <img src={previewURL} alt="Preview" className="preview-media" />
+                )}
 
-          <button
-            onClick={uploadFile}
-            disabled={isUploading}
-            className="preview-upload-button"
-          >
-            {isUploading ? 'Uploading…' : 'Upload'}
-          </button>
+                <button
+                    onClick={uploadFile}
+                    disabled={isUploading}
+                    className="preview-upload-button"
+                >
+                    {isUploading ? 'Uploading…' : 'Upload'}
+                </button>
+            </div>
         </div>
       )}
 

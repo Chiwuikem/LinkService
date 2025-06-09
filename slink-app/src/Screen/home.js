@@ -1,7 +1,8 @@
 import React, {useEffect} from 'react';  
 import { useAuth } from "react-oidc-context";
 import {useNavigate} from 'react-router-dom';
-import './styles/home.css';
+import MapComponent from './helper/mapComponent';
+// import './styles/home.css';
 
 function Home() {
       const auth = useAuth();
@@ -41,8 +42,9 @@ function Home() {
       return (
         <div> 
           <div> 
-              <h1>              Streamer University</h1>
+              <h1>Streamer University</h1>
           </div>
+          <MapComponent />
         </div>
 
       );
