@@ -65,6 +65,8 @@ function ProfileHeader(){
             localStorage.setItem(`profilePic_${user.profile.sub}`, url);
             setProfilePic(url)
             setFileToUpload(null);
+            setPreviewURL(null);
+            document.getElementById('profile-file-input').value = '';
             } catch (err){
                 console.error(err);
                 alert('Upload Failed');
@@ -82,15 +84,27 @@ function ProfileHeader(){
     return (
         <div className="profile-header-container">
             <div className="profile-pic-section">
-                {profilePic ? (
-                    <img
-                        src={profilePic}
-                        alt='Profile'
-                        className="profile-image"
-                    />
-                ) : (
-                    <div className="placeholder-profile-pic"> No Profile Image</div>
-                )}
+                <div className="profile-pic-wrapper">
+                    {profilePic ? (
+                        <img
+                            src={profilePic}
+                            alt='Profile'
+                            className="profile-image"
+                        />
+                    ) : (
+                        <div className="placeholder-profile-pic"> No Profile Image</div>
+                    )}
+                </div>
+                 {/*Upload Controls*/}
+                <label htmlFor="profile-file-input" className="chooseFile-icon-button">
+                    +
+                </label>
+                <input
+                    id="profile-file-input"
+                    type='file'
+                    accept='image/*'
+                    onChange={handleFileChange}
+                />
             </div>
             {/*Preview Section*/}
             {previewURL && (
@@ -106,16 +120,6 @@ function ProfileHeader(){
                     </div>
                 </div>
             )}
-
-            {/*Upload Controls*/}
-            <div className="upload-controls">
-                <input
-                    id="profile-file-input"
-                    type='file'
-                    accept='image/*'
-                    onChange={handleFileChange}
-                />
-            </div>
         </div>
     );
 }
