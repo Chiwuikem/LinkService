@@ -10,17 +10,17 @@ const Sidebar = () => {
       <ul className="sidebar-links">
         <li>
           <Link to="/" title="Home">
-            <FiHome size={24} />
+            <FiHome size={50} />
           </Link>
         </li>
         <li>
           <Link to="/profile" title="Profile">
-            <FiUser size={24} />
+            <FiUser size={50} />
           </Link>
         </li>
         <li>
           <Link to="/settings" title="Settings">
-            <FiSettings size={24} />
+            <FiSettings size={50} />
           </Link>
         </li>
       </ul>

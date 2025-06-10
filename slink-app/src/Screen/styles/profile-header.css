@@ -9,14 +9,15 @@
   position: relative;
   margin-bottom: 20px;
   overflow: visible;
+  transform: translateX(-120%);
 }
 
 .profile-pic-wrapper{
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 150px;
-  height: 150px;
+  width: 250px;
+  height: 250px;
   border-radius: 50%;
   margin-bottom: 20px;
   overflow: hidden;
@@ -31,17 +32,17 @@
 }
 .chooseFile-icon-button{
   position:absolute;
-  bottom: 15px;
+  bottom: 30px;
   right: 15px;
-  width: 32px;
-  height: 32px;
+  width: 50px;
+  height: 50px;
   background-color: #007bff;
   color: white;
   border-radius: 50%;
   font-size: 22px;
   font-weight: bold;
   text-align: center;
-  line-height: 32px;
+  line-height: 50px;
   cursor: pointer;
   border: none;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
