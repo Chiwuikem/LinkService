@@ -3,6 +3,17 @@
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  border: 1px solid;
+  border-color: rgba(255, 255, 255, 0);
+  max-height: 300px;
+  position: relative;
+}
+.separator{
+  width: 70%;
+  height: 3px; 
+  background-color: white; 
+  margin: 20px 0 ;
+  border: 0.03px solid rgb(101, 101, 101);
 }
 
 .profile-pic-section{
@@ -55,4 +66,92 @@
 .placeholder-profile-pic{
   width: 100%;
 
+}
+
+/*Profile INFO SEction*/
+
+.profile-info-container{
+  position: absolute;
+  border: 1px solid rgb(0, 0, 0);
+  padding: 20px; /*spacing from the border for the content inside the container*/
+  top: 50px;
+  right: 27%;
+  width: 400px;
+  height: 200px;
+}
+
+.username{
+  color: white;
+}
+
+.bio-input{
+  margin-top: 10px;
+  height: 50px;
+  width: 200px;
+  color: black;
+  border-color: rgba(0, 255, 255, 0);
+  font-size: 1.3rem;
+  font-family: 'Rubik', sans-serif;
+  font-weight: 550;
+  letter-spacing: 0.05em;
+  outline: none;
+  
+}
+
+.bio-input[readonly]{
+   background-color: #f0f0f000;
+  cursor: default;
+  color: #f9f9f9;
+}
+
+.bio-input:focus {
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+
+
+.edit-bio-button{
+  height: 20px;
+    background-color: rgb(202, 199, 199);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-family: 'Rubik', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+
+    width: 150px;
+    height: 60px;
+    font-size: 1rem;
+    display: flex-start;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hover effect - slightly grey */
+.edit-bio-button:hover {
+  background-color: #8f8f8f;
+}
+
+.save-bio-button{
+  height: 20px;
+    background-color: rgb(25, 138, 230);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-family: 'Rubik', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+
+    width: 150px;
+    height: 60px;
+    font-size: 1rem;
+    display: flex-start;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hover effect - slightly grey */
+.save-bio-button:hover {
+  background-color: #0b61a3;
 }

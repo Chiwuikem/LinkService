@@ -5,6 +5,8 @@ import MapComponent from './helper/mapComponent';
 import ProfileHeader from './profile-header';
 import { FiUser, FiPlus } from 'react-icons/fi';
 
+import './styles/profile.css';
+
 
 function Profile() {
   const auth = useAuth();
