@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import { useAuth } from "react-oidc-context";
 import {useNavigate} from 'react-router-dom';
 import MapComponent from './helper/mapComponent';
-// import './styles/home.css';
+import './styles/home.css';
 
 function Home() {
       const auth = useAuth();
@@ -40,7 +40,7 @@ function Home() {
       
     
       return (
-        <div> 
+        <div className='home-page'> 
           <div> 
               <h1>Streamer University</h1>
           </div>

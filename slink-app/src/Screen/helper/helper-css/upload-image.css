@@ -181,7 +181,7 @@
 
 /* Preview video */
 .preview-media {
-  max-width: 100%;
+  max-width: 90%;
   max-height: 70%;
   border-radius: 12px;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);

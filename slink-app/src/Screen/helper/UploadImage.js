@@ -127,7 +127,7 @@ function UploadImage() {
                 </button>
 
                 {previewType.startsWith('video/') ? (
-                    <video src={previewURL} className="preview-video" controls autoPlay />
+                    <video src={previewURL} className="preview-media" controls autoPlay />
                 ) : (
                     <img src={previewURL} alt="Preview" className="preview-media" />
                 )}

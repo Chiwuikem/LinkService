@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from "react-oidc-context";
+import './styles/settings.css';
 
 function Settings() {
   const auth = useAuth();
@@ -12,11 +13,18 @@ function Settings() {
     window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
   };
 
+  if(!auth.isAuthenticated){
+    return(
+      <div className='settings-page'>
+        <button onClick = {() =>auth.signinRedirect()}>sign in</button>
+      </div>
+    )
+  }
+
   return (
-    <div style={{ padding: '20px' }}>
+    <div className='settings-page'>
       <h2>Settings</h2>
       <button onClick={signOutRedirect} className="signout">Sign Out</button>
-      <button onClick = {() =>auth.signinRedirect()}>sign in</button>
     </div>
   );
 }
