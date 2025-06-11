@@ -1,1 +1,4 @@
+Activate venv: venv\Scripts\activate
 Activate DB: uvicorn main:app --reload
+in this directory 
+(venv) C:\Users\corji\OneDrive - Villanova University\Documents\Slink-Git\LinkService\slink-app\backend-py>
