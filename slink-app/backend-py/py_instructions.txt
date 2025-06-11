@@ -1,0 +1,1 @@
+Activate DB: uvicorn main:app --reload
