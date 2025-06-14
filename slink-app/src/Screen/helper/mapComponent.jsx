@@ -39,11 +39,9 @@ function MapComponent() {
             }
             const lat = place.geometry.location.lat();
             const lng = place.geometry.location.lng();
-            const address = place.formatted_address;
+            const result = place.formatted_address.split(",");
 
             setUserLocation({ lat, lng });
-            setFormattedAddress(address);
-            console.log("Selected address:", address);
             console.log("Selected coordinates:", { lat, lng });
 
             //TODO: Save the address and coordinates to the database
@@ -84,27 +82,31 @@ function MapComponent() {
                 <FaMapMarkerAlt title={showMap ? "Hide Map": "Show Map"}/>
             </button>
             {showMap && (
-                <div className="map-container-position">
-                    <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
-                        <input
-                            type="text"
-                            placeholder="My neighborhood"
-                            className="bold-placeholder"
-                            
-                        />
-                    </Autocomplete>
+                <div className="map-container">
+                    <div className="map-container-position">
+                        <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+                            <input
+                                type="text"
+                                placeholder="My neighborhood"
+                                className="bold-placeholder"
+                                
+                            />
+                        </Autocomplete>
+                        
+                        <GoogleMap
+                            mapContainerClassName="google-map"
+                            zoom={12}
+                            center={userLocation || defaultCenter}
+                            >
+                                {userLocation && <Marker position={userLocation} />}
+                        </GoogleMap>
                     
-                    <GoogleMap
-                        mapContainerClassName="google-map"
-                        zoom={12}
-                        center={userLocation || defaultCenter}
-                        >
-                            {userLocation && <Marker position={userLocation} />}
-                    </GoogleMap>
-                    
-
-                
+                    </div>
+                    <button className="confirm-location-btn">
+                            Confirm
+                    </button>
                 </div>
+            
             )}
         </div>
     );

@@ -45,3 +45,15 @@ def lambda_handler(event, context):
         }
     finally:
         conn.close()
+
+
+DB_HOST
+slinkdb.cpeuuq42ovqb.us-east-2.rds.amazonaws.com
+DB_NAME
+postgres
+DB_PASSWORD
+chiwuikem
+DB_PORT
+5432
+DB_USER
+adminDB

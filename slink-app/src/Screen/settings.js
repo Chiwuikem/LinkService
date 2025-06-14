@@ -16,7 +16,7 @@ function Settings() {
   if(!auth.isAuthenticated){
     return(
       <div className='settings-page'>
-        <button onClick = {() =>auth.signinRedirect()}>sign in</button>
+        <button onClick = {() =>auth.signinRedirect()} classname="sign-button">sign in</button>
       </div>
     )
   }
@@ -24,7 +24,7 @@ function Settings() {
   return (
     <div className='settings-page'>
       <h2>Settings</h2>
-      <button onClick={signOutRedirect} className="signout">Sign Out</button>
+      <button onClick={signOutRedirect} className="sign-button">Sign Out</button>
     </div>
   );
 }

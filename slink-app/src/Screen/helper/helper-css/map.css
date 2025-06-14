@@ -9,12 +9,26 @@
   padding: 12px;
   border:none;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.map-container{
+  top: 50px;
+  right: 10px;
+  height: 400px;
+  width: 500px;
+  position: fixed;
+  border: 2px solid white;
+  display: flex;
+  flex-direction:column;
+  z-index: 997;
+  
 }
 
 .map-container-position{
   position: fixed;
   top: 50px;
-  right: -90px;
+  right: 10px;
   z-index: 998;
   width: 500px;
   height: 40vh;
@@ -46,6 +60,13 @@
   width: 100%;
   height: 100%;
   position: absolute;
-
   flex-grow: 1;
+}
+
+.confirm-location-btn{
+  position: absolute;
+  padding: 12px;
+  bottom: 30px;
+  left: 220px;
+  
 }

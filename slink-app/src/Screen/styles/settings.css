@@ -1,5 +1,11 @@
+
 .settings-page{
+    background-image: url('./pictures/jase-bloor-oCZHIa1D4EU-unsplash.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh;
     margin-left: 120px;
     padding: 10px;
-    position: relative;
+    
 }
