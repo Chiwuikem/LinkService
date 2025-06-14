@@ -9,3 +9,19 @@
     padding: 10px;
     
 }
+
+.sign-button{
+    max-width: 180px;
+    width: 100%;
+    height: 60px;
+    border-radius: 10%;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.sign-button:hover{
+    background-color: blue;
+    color: white;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 20);
+}

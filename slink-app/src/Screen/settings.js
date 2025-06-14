@@ -16,7 +16,7 @@ function Settings() {
   if(!auth.isAuthenticated){
     return(
       <div className='settings-page'>
-        <button onClick = {() =>auth.signinRedirect()} classname="sign-button">sign in</button>
+        <button onClick = {() =>auth.signinRedirect()} className="sign-button">sign in</button>
       </div>
     )
   }
