@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {GoogleMap, useLoadScript, Marker, Autocomplete} from '@react-google-maps/api';
 import { FaMapMarkerAlt } from 'react-icons/fa';
+import {useAuth} from "react-oidc-context";
 import './helper-css/map.css';
 //import {useAuth} from "react-oidc-context";
 
@@ -23,13 +24,17 @@ function MapComponent() {
     const [userLocation, setUserLocation] = useState(null);
     const [autocomplete, setAutocomplete] = useState(null);
     const [formattedAddress, setFormattedAddress] = useState('');
+    const [pendingAddress, setPendingAddress] = useState(null);
     const [showMap, setShowMap] = useState(false);
+
+    const auth = useAuth();
+    const userSub = auth?.user?.profile?.sub;
 
     const onLoad = (autoC) => {
         setAutocomplete(autoC);
     };
 
-    const onPlaceChanged = () => {
+    const onPlaceChanged = async () => {
         if (autocomplete !== null){
             const place = autocomplete.getPlace();
             
@@ -39,20 +44,52 @@ function MapComponent() {
             }
             const lat = place.geometry.location.lat();
             const lng = place.geometry.location.lng();
-            const result = place.formatted_address.split(",");
+            const address = place.name || place.formatted_address || "Unknown location";
 
-            setUserLocation({ lat, lng });
-            console.log("Selected coordinates:", { lat, lng });
-
-            //TODO: Save the address and coordinates to the database
+            setPendingAddress({ lat, lng, address });
+            console.log("Pending  address:", {lat, lng, address});
+        }
             
-
-        } else {
+        else {
             console.log("Autocomplete is not loaded yet!");
         }
 
-
     };
+
+    //TODO: Save the address and coordinates to the database
+
+    const handleConfirmClick = async () => {
+        if(!pendingAddress || !userSub){
+            console.log("Missing location or userSub");
+            return;
+        }
+
+        const {lat, lng, address}= pendingAddress;
+        try{
+            const response = await fetch("http://127.0.0.1:8000/save-location", {
+                method: "POST",
+                headers: {
+                    "Content-type" : "application/json",
+                },
+                body: JSON.stringify({
+                    user_id: userSub,
+                    latitude: lat,
+                    longitude: lng,
+                    location_name: address
+                }),
+            });
+
+            if (!response.ok){
+                throw new Error("Failed to save location");
+            }
+
+            const data = await response.json;
+            console.log("Saved Successfully", data);
+        } catch (err) {
+            console.log("Error posting location to Database:", err)
+        }
+
+    }
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(
@@ -102,7 +139,7 @@ function MapComponent() {
                         </GoogleMap>
                     
                     </div>
-                    <button className="confirm-location-btn">
+                    <button className="confirm-location-btn" onClick={handleConfirmClick}>
                             Confirm
                     </button>
                 </div>

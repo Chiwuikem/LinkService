@@ -1,4 +1,7 @@
 Activate venv: venv\Scripts\activate
+Select Py interpteter: ctrl+shift+p
+Install dependencies: pip install -r requirements.txt
+
 Activate DB: uvicorn main:app --reload
 in this directory 
 (venv) C:\Users\corji\OneDrive - Villanova University\Documents\Slink-Git\LinkService\slink-app\backend-py>
