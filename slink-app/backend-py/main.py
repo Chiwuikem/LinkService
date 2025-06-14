@@ -28,8 +28,12 @@ async def save_location(location: Location, request: Request):
         cur = conn.cursor()
         cur.execute(
             """
-            INSERT INTO user_location(user_id, latitude, longitude, location_name)
+            INSERT INTO user_location (user_id, latitude, longitude, location_name)
             VALUES (%s, %s, %s, %s)
+            ON CONFLICT (user_id) DO UPDATE
+            SET latitude = EXCLUDED.latitude,
+                longitude = EXCLUDED.longitude,
+                location_name = EXCLUDED.location_name
             """,
             (location.user_id, location.latitude, location.longitude, location.location_name)
         
