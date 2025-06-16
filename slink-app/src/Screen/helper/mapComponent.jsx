@@ -3,7 +3,7 @@ import {GoogleMap, useLoadScript, Marker, Autocomplete} from '@react-google-maps
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import {useAuth} from "react-oidc-context";
 import './helper-css/map.css';
-//import {useAuth} from "react-oidc-context";
+
 
 const libraries = ["places"];
 
