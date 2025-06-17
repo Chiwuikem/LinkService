@@ -20,7 +20,7 @@ function MapComponent() {
     });
 
     
-
+    //initialize state variables
     const [userLocation, setUserLocation] = useState(null);
     const [autocomplete, setAutocomplete] = useState(null);
     const [formattedAddress, setFormattedAddress] = useState('');
