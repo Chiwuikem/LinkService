@@ -1,5 +1,27 @@
 .home-page{
     position: relative;
     margin-left: 120px;
-    padding: 20px;
+    padding: 0;
+    height: 100vh;
+}
+.top-half-homepage{
+    border: 2px solid blue;
+    max-height: 500px;
+    height: 100%;
+}
+.top-half-logo{
+    border: 2px solid blue;
+    border-color: blue;
+    max-height: 400px;
+    max-width: 500px;
+    min-height: 100px;
+    padding: 10px;
+    text-align: center;
+
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 80px;
+    
+
+    
 }

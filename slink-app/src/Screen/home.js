@@ -36,15 +36,22 @@ function Home() {
       if (auth.error) {
           return <div>Encountering error... {auth.error.message}</div>;
         }
+
+
+
+
     
       
     
       return (
-        <div className='home-page'> 
-          <div> 
-              <h1>Streamer University</h1>
-          </div>
+        <div className='home-page'>
           <MapComponent />
+          <div className="top-half-homepage">
+            <div className="top-half-logo"> 
+                <h1>Streamers University</h1>
+            </div>
+          </div>
+            
         </div>
 
       );
