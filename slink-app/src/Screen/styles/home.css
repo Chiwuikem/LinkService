@@ -8,15 +8,18 @@
     border: 2px solid blue;
     max-height: 500px;
     height: 100%;
+    background-color: rgb(27, 25, 25);
 }
 .top-half-logo{
+    color:white;
     border: 2px solid blue;
     border-color: blue;
-    max-height: 400px;
-    max-width: 500px;
+    border: none;
+    max-height: 150px;
+    max-width: 700px;
     min-height: 100px;
-    padding: 10px;
-    font-size: 20px;
+    padding: 0px;
+    font-size: 30px;
     font-family: Georgia, 'Times New Roman', Times, serif;
     text-align: center;
 
@@ -26,7 +29,8 @@
 }
 
 .content-placeholder{
-    border: 2px solid blue;
+    /* border: 2px solid blue; */
+    border: none;
     margin-top: 10px;
     margin-left: auto;
     margin-right: auto;
