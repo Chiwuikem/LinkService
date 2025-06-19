@@ -13,12 +13,14 @@ function App() {
   return (
     <Router>
       <Sidebar />
+      <div className="page-content">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/help" element={<Help />} />
         </Routes>
+      </div>
     </Router>
   );
 }

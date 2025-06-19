@@ -13,13 +13,20 @@ function Profile() {
 
 
   return (
-    <div className="profile">
-      
-      <ProfileHeader/>
-      <UploadImage />
-      <MapComponent />
-    </div>
-  );
+    <>
+    {auth.isAuthenticated ? (
+      <div className="profile">
+        <ProfileHeader />
+        <UploadImage />
+        <MapComponent />
+      </div>
+    ) : (
+      <div className="not-logged-page">
+        <h1>Please sign in</h1>
+      </div>
+    )}
+  </>
+);
 }
 
 export default Profile;
