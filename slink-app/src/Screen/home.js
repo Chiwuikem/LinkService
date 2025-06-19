@@ -50,6 +50,9 @@ function Home() {
             <div className="top-half-logo"> 
                 <h1>Streamers University</h1>
             </div>
+            <div className="content-placeholder">
+              <img src="/SLinkGif.gif" alt="Content animation" className="gif-style" />
+            </div>
           </div>
             
         </div>
