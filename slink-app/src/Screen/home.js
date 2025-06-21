@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import { useAuth } from "react-oidc-context";
 import {useNavigate} from 'react-router-dom';
 import MapComponent from './helper/mapComponent';
+import TwitchLoginButton from './helper/twitchButton';
 import './styles/home.css';
 
 function Home() {
@@ -47,6 +48,9 @@ function Home() {
         <div className='home-page'>
           <MapComponent />
           <div className="top-half-homepage">
+            <div className="twitch-button-container">
+              <TwitchLoginButton />
+            </div>
             <div className="top-half-logo"> 
                 <h1>Streamers University</h1>
             </div>

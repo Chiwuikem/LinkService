@@ -1,5 +1,6 @@
 // process.env.REACT_APP_TWITCH_CLIENT_ID
 // process.env.REACT_APP_TWITCH_SECRET_KEY
+import './helper-css/TwitchButton.css';
 import React from 'react';
 const CLIENT_ID=process.env.REACT_APP_TWITCH_CLIENT_ID;
 const REDIRECT_URI='http://localhost:3000/twitch/callback';
@@ -55,5 +56,5 @@ export default function TwitchLoginButton() {
 
         }
     };
-    return <button onClick={handleLogin}>TwitchLogin</button>;
+    return <button onClick={handleLogin} className="twitch-button">Link To Twitch</button>;
 }

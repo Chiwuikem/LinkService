@@ -1,0 +1,14 @@
+.twitch-button{
+    font-size: 1rem;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background-color: #6441a5;
+    color: white;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.twitch-button:hover{
+    background-color: #4b2a88;
+}
