@@ -2,6 +2,7 @@
 // process.env.REACT_APP_TWITCH_SECRET_KEY
 import './helper-css/TwitchButton.css';
 import React from 'react';
+import { getTwitchUser, getSubscriberCount, getAverageViews } from './twitchUserInfo';
 const CLIENT_ID=process.env.REACT_APP_TWITCH_CLIENT_ID;
 const REDIRECT_URI='http://localhost:3000/twitch/callback';
 const SCOPES=['user:read:email', 'user:read:follows', 'channel:read:subscriptions'];
@@ -50,6 +51,28 @@ export default function TwitchLoginButton() {
             const code = await openTwitchPopup(CLIENT_ID, REDIRECT_URI, SCOPES);
             console.log("Got code:", code);
             // TODO: Send this code to your backend to exchange for access token
+            const res = await fetch("http://127.0.0.1:8000/twitch/exchange-code",{
+                method: "POST",
+                headers: {"Content-Type":"application/json"},
+                body: JSON.stringify({code}),
+
+
+            });
+            const tokenData=await res.json();
+            console.log("Token Data", tokenData);
+            // Fetching user Twitch JSON with token
+            const userInfo = await getTwitchUser(tokenData.access_token, CLIENT_ID);
+            console.log("Twitch user JSON:", userInfo);
+
+            const broadcasterId = userInfo.id;
+            console.log(broadcasterId);
+
+            const SubscriberCount = await getSubscriberCount(userInfo.id, tokenData.access_token, CLIENT_ID);
+            console.log('Subscriber count:', SubscriberCount);
+
+            const userAvgViews = await getAverageViews(broadcasterId, tokenData.access_token, CLIENT_ID, 20 );
+            console.log('Average Viewership count:', userAvgViews); 
+            // Todo: Save tokens to user session session or db
 
         } catch(err){
             console.error("Login failed:", err);

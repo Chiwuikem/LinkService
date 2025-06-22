@@ -1,23 +1,20 @@
 import os
 import httpx
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Request, APIRouter
+from dotenv import load_dotenv
 
-app = FastAPI()
+load_dotenv()
+router= APIRouter()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-Twitch_ClientID=os.getenv("Twitch_clientID")
+Twitch_ClientID=os.getenv("Twitch_ClientID")
 Twitch_Secret_Key=os.getenv("Twitch_Secret_Key")
 Twitch_Redirect_URI= "http://localhost:3000/twitch/callback"
 
-@app.post("/twitch/exchange-code")
+print("Loaded Twitch_ClientID:", Twitch_ClientID)
+print("Loaded Twitch_Secret_Key:", Twitch_Secret_Key)
+
+@router.post("/twitch/exchange-code")
 async def exchange_code(request: Request):
     data = await request.json()
     code = data.get("code")
@@ -36,4 +33,4 @@ async def exchange_code(request: Request):
             },
         )
         response.raise_for_status()
-        return response.json
+        return response.json()
