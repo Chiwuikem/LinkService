@@ -56,7 +56,7 @@ function MapComponent() {
 
     };
 
-    //TODO: Save the address and coordinates to the database
+    // Save the address and coordinates to the database
 
     const handleConfirmClick = async () => {
         if(!pendingAddress || !userSub){
