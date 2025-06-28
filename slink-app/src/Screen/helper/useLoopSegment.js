@@ -1,31 +1,26 @@
+// src/helper/usePartialLoop.js
 import { useEffect } from 'react';
 
-export default function useLoopSegment(videoRef, loopDuration = 3, videoUrl) {
+export default function useLoopSegment(videoRef, loopSeconds = 3, active = true) {
   useEffect(() => {
     const vid = videoRef.current;
-    if (!vid) return;
+    if (!vid || !active) return;
 
-    const handleCanPlay = () => {
-      vid.currentTime = 0;
-      vid.play().catch((err) => {
-        console.warn("Play interrupted: ", err);
-      });
-    };
-
-    const handleTimeUpdate = () => {
-      if (vid.currentTime >= loopDuration) {
+    const onTimeUpdate = () => {
+      if (vid.currentTime >= loopSeconds) {
         vid.currentTime = 0;
+        // only play if it’s paused
+        if (vid.paused) vid.play().catch(() => {});
       }
     };
 
-    vid.addEventListener('canplay', handleCanPlay);
-    vid.addEventListener('timeupdate', handleTimeUpdate);
+    // start it off
+    vid.currentTime = 0;
+    vid.play().catch(() => {});
 
+    vid.addEventListener('timeupdate', onTimeUpdate);
     return () => {
-      // Clean up old listeners
-      vid.removeEventListener('canplay', handleCanPlay);
-      vid.removeEventListener('timeupdate', handleTimeUpdate);
-      vid.pause(); // Ensure old video stops
+      vid.removeEventListener('timeupdate', onTimeUpdate);
     };
-  }, [videoRef, loopDuration, videoUrl]);
+  }, [videoRef, loopSeconds, active]);
 }
