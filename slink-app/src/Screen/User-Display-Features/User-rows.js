@@ -11,6 +11,9 @@ function UserRows(){
     const [error, setError] = useState(null);
     const videoRef = useRef(null);
 
+    const [uploaderSub, setUploaderSub] = useState(null);
+    const [uploaderName, setUploaderName] = useState(null);
+
     useLoopSegment(videoRef, 3, videoUrl);
 
     //Will occur on every render
@@ -43,14 +46,33 @@ function UserRows(){
                 const randKey = keys[Math.floor(Math.random() * keys.length)];
 
                 const url =`https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${randKey}`;
-
+                const sub = randKey.split('/')[0];
+                
+                setUploaderSub(sub);
                 setVideoUrl(url)
             });
         };
         fetchVideoKey();
 
     },[auth.isAuthenticated]);
-     // Show error if any
+
+    // 2) Look up the uploader’s username from your FastAPI backend
+    useEffect(() => {
+        if (!uploaderSub) return;
+
+        fetch(`http://localhost:8000/user/${uploaderSub}`)
+        .then(res => {
+            if (!res.ok) throw new Error('User not found');
+            return res.json();
+        })
+        .then(data => setUploaderName(data.username))
+        .catch(err => {
+            console.warn(err);
+            setUploaderName(uploaderSub); // fallback to sub if lookup fails
+        });
+        }, [uploaderSub]);
+
+    // Show error if any
     if (error) {
         return <div className="Border">{error}</div>;
     }
@@ -63,6 +85,10 @@ function UserRows(){
     <div>
         <div className="Border">
             <div className="video-wrapper">
+                {/* Show the uploader’s name (or their UUID if lookup fails) */}
+                <div className="uploader-label">
+                    Uploaded by: {'@'+uploaderName || 'Unknown'}
+                </div>
                 <video 
                     ref={videoRef}
                     src={videoUrl} 

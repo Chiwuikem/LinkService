@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from models import Location
 from db import db_connection
 from twitch_routes import router as twitch_router
+from user_routes import router as user_router
+
 
 app = FastAPI()
 
@@ -17,6 +19,7 @@ app.add_middleware(
 )
 
 app.include_router(twitch_router)
+app.include_router(user_router)
 
 @app.post("/save-location")
 async def save_location(location: Location, request: Request):
