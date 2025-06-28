@@ -3,6 +3,7 @@ import { useAuth } from "react-oidc-context";
 import {useNavigate} from 'react-router-dom';
 import MapComponent from './helper/mapComponent';
 import TwitchLoginButton from './helper/twitchButton';
+import  UserRows from './User-Display-Features/User-rows';
 import './styles/home.css';
 
 function Home() {
@@ -57,6 +58,9 @@ function Home() {
             <div className="content-placeholder">
               <img src="/SLinkGif.gif" alt="Content animation" className="gif-style" />
             </div>
+          </div>
+          <div>
+            <UserRows />
           </div>
             
         </div>

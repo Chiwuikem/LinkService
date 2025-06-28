@@ -1,11 +1,14 @@
 import AWS from 'aws-sdk';
 
+export const S3_BUCKET = process.env.REACT_APP_S3_BUCKET;
+export const REGION = process.env.REACT_APP_COGNITO_REGION;
 AWS.config.update({
-    region: 'us-east-2', 
-    credentials: new AWS.CognitoIdentityCredentials({
-        IdentityPoolId: 'us-east-2:8fecbc7e-97ab-4c85-85de-a8e740066f3b', // Replace with your Identity Pool ID
-    }),
+    region: REGION, 
+    credentials: {
+        accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY
+    },
 });
 
-const s3 = new AWS.S3({ params: {Bucket: 'slinkchiwuikem'}});
+const s3 = new AWS.S3();
 export default s3;
