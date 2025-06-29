@@ -20,7 +20,6 @@ export default function VideoCard({ url, username, loopSeconds=5 }) {
           muted
           autoPlay
           playsInline
-        
           className="user-video"
         />
       </div>
