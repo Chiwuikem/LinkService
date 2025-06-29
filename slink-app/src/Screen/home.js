@@ -53,7 +53,7 @@ function Home() {
               <TwitchLoginButton />
             </div>
             <div className="top-half-logo"> 
-                <h1>Streamers University</h1>
+                <h1>Streamers Link</h1>
             </div>
             <div className="content-placeholder">
               <img src="/SLinkGif.gif" alt="Content animation" className="gif-style" />

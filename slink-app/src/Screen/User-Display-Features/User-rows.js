@@ -6,77 +6,100 @@ import VideoCard from './VideoCard';
 import './styles/userrow.css';
 
 const VIDEO_EXTENSIONS = /\.(mp4|mov|webm)$/i;
-const MAX_VIDEOS       = 10;
+const MAX_VIDEOS = 10;
 
 export default function UserRows() {
   const auth = useAuth();
-  const [videos, setVideos] = useState([]);  // { url, sub, username }
-  const [error,  setError]  = useState(null);
+  const [videos, setVideos] = useState([]); // { url, sub, username }
+  const [error, setError] = useState(null);
 
+  // Validate if a video URL is accessible
+  const validateVideo = async (url) => {
+    try {
+      const res = await fetch(url, { method: 'HEAD' });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  };
+
+  // Get a list of valid video objects
+  const fetchValidVideos = async (keys) => {
+    const validVideos = [];
+    for (const key of keys) {
+      const url = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${key}`;
+      const isValid = await validateVideo(url);
+      if (isValid) {
+        validVideos.push({ url, sub: key.split('/')[0], username: null });
+      }
+      if (validVideos.length === MAX_VIDEOS) break;
+    }
+    return validVideos;
+  };
+
+  // Fetch and validate videos on mount
   useEffect(() => {
-    // 1) list & filter
-    s3.listObjectsV2({ Bucket: S3_BUCKET }, (err, data) => {
-      if (err) {
-        console.error('S3 list error:', err);
-        setError('Could not load content');
-        return;
-      }
+    const fetchVideos = () => {
+      s3.listObjectsV2({ Bucket: S3_BUCKET }, async (err, data) => {
+        if (err) {
+          console.error('S3 list error:', err);
+          setError('Could not load content');
+          return;
+        }
 
-      let keys = data.Contents
-        .map(o => o.Key)
-        .filter(k => VIDEO_EXTENSIONS.test(k));
+        let keys = data.Contents
+          .map(o => o.Key)
+          .filter(k => VIDEO_EXTENSIONS.test(k));
 
-      if (auth.isAuthenticated) {
-        const mine = auth.user.profile.sub + '/';
-        keys = keys.filter(k => !k.startsWith(mine));
-      }
+        if (auth.isAuthenticated) {
+          const mine = auth.user.profile.sub + '/';
+          keys = keys.filter(k => !k.startsWith(mine));
+        }
 
-      if (!keys.length) {
-        setError('No videos available');
-        return;
-      }
+        if (!keys.length) {
+          setError('No videos available');
+          return;
+        }
 
-      // 2) shuffle *once* and slice
-      const shuffled = keys.sort(() => 0.5 - Math.random());
-      const selected = shuffled.slice(0, MAX_VIDEOS);
+        const shuffled = keys.sort(() => 0.5 - Math.random());
+        const validVideos = await fetchValidVideos(shuffled);
 
+        if (!validVideos.length) {
+          setError('No valid videos found');
+          return;
+        }
 
-      // 3) build the array
-      const arr = selected.map(key => ({
-        url:  `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${key}`,
-        sub:  key.split('/')[0],
-        username: null
-      }));
+        setVideos(validVideos);
+      });
+    };
 
-      setVideos(arr);
-    });
-  // IMPORTANT: empty deps means “run once on mount”
-  }, []);
+    fetchVideos();
+  }, [auth.isAuthenticated]);
 
-  // 4) lookup usernames
+  // Batch fetch uploader usernames efficiently
   useEffect(() => {
-    videos.forEach((vid, i) => {
-      if (vid.username !== null) return;
-      fetch(`http://localhost:8000/user/${vid.sub}`)
-        .then(r => (r.ok ? r.json() : Promise.reject()))
-        .then(data => {
-          setVideos(vs => {
-            const copy = [...vs];
-            copy[i].username = data.username;
-            return copy;
-          });
+    const fetchUsernames = async () => {
+      const updatedVideos = await Promise.all(
+        videos.map(async (vid) => {
+          try {
+            const res = await fetch(`http://localhost:8000/user/${vid.sub}`);
+            if (!res.ok) throw new Error('User not found');
+            const data = await res.json();
+            return { ...vid, username: data.username };
+          } catch {
+            return { ...vid, username: vid.sub };
+          }
         })
-        .catch(() => {
-          setVideos(vs => {
-            const copy = [...vs];
-            copy[i].username = vid.sub;
-            return copy;
-          });
-        });
-    });
+      );
+      setVideos(updatedVideos);
+    };
+
+    if (videos.length && videos.some(v => v.username === null)) {
+      fetchUsernames();
+    }
   }, [videos]);
 
-  if (error)         return <div className="Border">{error}</div>;
+  if (error) return <div className="Border">{error}</div>;
   if (!videos.length) return <div className="Border">Loading…</div>;
 
   return (
