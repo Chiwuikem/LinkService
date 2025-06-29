@@ -1,43 +1,38 @@
-// Polyfills must come first
-import 'react-native-get-random-values';
-import 'react-native-url-polyfill/auto';
-
+// app/_layout.js
 import React from 'react';
-import { Slot } from 'expo-router';
-import {Amplify} from 'aws-amplify';
-import awsExports from '../src/aws-exports';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
-import { SafeAreaView, Text, Button } from 'react-native';
+import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
-// Double‑check Amplify is defined
-console.log('🌩 Amplify is', Amplify);
-
-Amplify.configure({
-  ...awsExports,
-  storage: AsyncStorage,
-  ssr: true,
-});
-
-function MainApp() {
-  const { user, signOut } = useAuthenticator();
+export default function TabLayout() {
   return (
-    <SafeAreaView style={{ flex: 1, padding: 16 }}>
-      <Text style={{ fontSize: 20, marginBottom: 12 }}>
-        Welcome, {user.username}!
-      </Text>
-      <Slot />
-      <Button title="Sign Out" onPress={signOut} />
-    </SafeAreaView>
-  );
-}
-
-export default function RootLayout() {
-  return (
-    <Authenticator.Provider>
-      <Authenticator>
-        {() => <MainApp />}
-      </Authenticator>
-    </Authenticator.Provider>
+    <Tabs
+      screenOptions={({ route }) => ({
+        headerShown: false,         // hide individual headers
+        tabBarIcon: ({ color, size }) => {
+          let iconName;
+          if (route.name === 'home') {
+            iconName = 'home';
+          } else if (route.name === 'profile') {
+            iconName = 'person';
+          } else if (route.name === 'settings') {
+            iconName = 'settings';
+          }
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#007aff',    // active icon + label
+        tabBarInactiveTintColor: 'orange',   // inactive icon + label
+        tabBarStyle: {
+        paddingBottom: 8,
+         height: 80,
+       },
+        tabBarLabelStyle: {                  // label text style
+          fontSize: 12,
+        },
+      })}
+    >
+      <Tabs.Screen name="home" options={{ title: 'Home' }} />
+      <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
+      <Tabs.Screen name="settings" options={{ title: 'Settings' }} />
+    </Tabs>
   );
 }
