@@ -11,6 +11,7 @@ export default StyleSheet.create({
     color: '#fff',
     borderRadius: 8,
     padding: 12,
-    marginBottom: 12,
+    marginBottom: 12,//
+
   },
 });

@@ -19,7 +19,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarIcon: ({ color, size }) => {
           let iconName;
-          if (route.name === 'home') {
+          if (route.name === 'index') {
             iconName = 'home';
           } else if (route.name === 'profile') {
             iconName = 'person';
@@ -39,7 +39,7 @@ export default function TabLayout() {
         },
       })}
     >
-      <Tabs.Screen name="home" options={{ title: 'Home' }} />
+      <Tabs.Screen name="index" options={{ title: 'Home' }} />
       <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
       <Tabs.Screen name="settings" options={{ title: 'Settings' }} />
     </Tabs>
