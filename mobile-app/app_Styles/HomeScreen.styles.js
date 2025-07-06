@@ -5,7 +5,7 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000',  // Black background
+    backgroundColor: '#fff',  // Black background
     padding: 0,
     margin: 0,
   },

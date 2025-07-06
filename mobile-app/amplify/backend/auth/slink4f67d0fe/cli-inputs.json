@@ -16,7 +16,7 @@
     "smsVerificationMessage": "Your verification code is {####}",
     "emailVerificationSubject": "Your verification code",
     "emailVerificationMessage": "Your verification code is {####}",
-    "defaultPasswordPolicy": true,
+    "defaultPasswordPolicy": false,
     "passwordPolicyMinLength": "6",
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
@@ -62,11 +62,7 @@
     "userPoolGroups": false,
     "adminQueries": false,
     "triggers": {},
-    "hostedUI": true,
-    "hostedUIDomainName": "slinkb89522e3-b89522e3",
-    "authProvidersUserPool": [],
-    "hostedUIProviderMeta": "[]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"email\",\"openid\",\"profile\"],\"CallbackURLs\":[\"exp://127.0.0.1:19000/--/callback/\"],\"LogoutURLs\":[\"http://localhost:3000/callback/\"]}",
+    "hostedUI": false,
     "authProviders": [],
     "parentStack": {
       "Ref": "AWS::StackId"
