@@ -1,3 +1,4 @@
+//index.js
 import React from 'react';
 import { View, Text, Image, Dimensions } from 'react-native';
 import LoginScreen from '../appComponents/Screen/LoginScreen';
