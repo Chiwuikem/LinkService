@@ -18,8 +18,10 @@ export default function LoginScreen() {
             />
             <View style={styles.overlay}>
                 <Text style={{color:'black'}}>Login With Google</Text>
-                <TouchableOpacity style={{display: 'flex', alignItems: 'center',
-                            gap: 10, flexDirection: 'row', backgroundColor: 'white', padding: 10, borderRadius: 99,
+                <TouchableOpacity 
+                onPress={() => console.log('Button Pressed')}
+                style={{display: 'flex', alignItems: 'center',
+                            gap: 10, flexDirection: 'row', backgroundColor: 'white',paddingHorizontal: 55,padding: 10, borderRadius: 99,
                             position: 'absolute', bottom: 150
                     
                 }}
